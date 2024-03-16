@@ -1,6 +1,7 @@
 import express from 'express';
 // import boardRoutes from './routes/boardRoutes';
 import connectDB from './database/database';
+require('dotenv').config();
 
 const app = express();
 const PORT = 6666;
