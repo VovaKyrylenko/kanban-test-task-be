@@ -8,6 +8,7 @@ const defaultColumns = [
 ];
 
 export const BoardSchema: Schema = new Schema({
+  _id: { type: Schema.Types.ObjectId, auto: true },
   name: { type: String, required: true },
   columns: { type: ColumnSchema, required: true, default: defaultColumns },
 });
