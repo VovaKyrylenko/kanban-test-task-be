@@ -5,7 +5,15 @@
     "target": "es2021",
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@controllers/*": ["./src/controllers"],
+      "@database/*": ["./src/database"],
+      "@interfaces/*": ["./src/interfaces"],
+      "@routes/*": ["./src/routes"]
+    }
   },
   "lib": ["es2021"]
 }
