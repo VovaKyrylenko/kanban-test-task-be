@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { BoardModel } from '@/database/models';
+import { BoardModel } from 'src/database/';
 
 /**
  * Controller function to create a new board.

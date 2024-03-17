@@ -1,5 +1,5 @@
 import express from 'express';
-import { createTask, updateTask, deleteTask } from '@/controllers/';
+import { createTask, updateTask, deleteTask } from 'src/controllers';
 
 export const taskRouter = express.Router({ mergeParams: true });
 

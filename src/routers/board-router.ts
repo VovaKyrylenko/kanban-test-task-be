@@ -4,7 +4,7 @@ import {
   getBoardById,
   updateBoard,
   deleteBoard,
-} from '@/controllers';
+} from 'src/controllers';
 
 export const boardRouter = express.Router();
 

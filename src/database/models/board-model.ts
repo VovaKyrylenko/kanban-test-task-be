@@ -1,4 +1,4 @@
-import { IBoard } from '@/interfaces';
+import { IBoard } from 'src/interfaces';
 import mongoose from 'mongoose';
 import { BoardSchema } from '../schemas';
 

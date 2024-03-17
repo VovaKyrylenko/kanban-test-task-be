@@ -1,4 +1,4 @@
-import { ITask } from '@/interfaces';
+import { ITask } from 'src/interfaces';
 import mongoose from 'mongoose';
 import { TaskSchema } from '../schemas';
 

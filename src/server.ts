@@ -1,7 +1,6 @@
 import express from 'express';
 import { boardRouter, taskRouter } from './routers/';
-import connectDB from './database/database';
-require('dotenv').config();
+import { connectDB } from './database';
 
 const app = express();
 const PORT = 6666;

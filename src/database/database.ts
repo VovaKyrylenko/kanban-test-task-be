@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-
+require('dotenv').config();
 const { DB_URL } = process.env;
 
-const connectDB = async () => {
+export const connectDB = async () => {
   try {
     await mongoose.connect(DB_URL);
     console.log('Connected to MongoDB');
@@ -11,5 +11,3 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-
-export default connectDB;

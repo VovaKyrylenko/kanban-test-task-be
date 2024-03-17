@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { BoardModel } from '@/database/models/board-model';
+import { BoardModel } from 'src/database/';
 
 /**
  * Controller function to create a new task in a board.
