@@ -1,5 +1,5 @@
 import express from 'express';
-// import boardRoutes from './routes/boardRoutes';
+import { boardRouter, taskRouter } from './routers/';
 import connectDB from './database/database';
 require('dotenv').config();
 
@@ -8,7 +8,8 @@ const PORT = 6666;
 
 app.use(express.json());
 connectDB();
-// app.use('/api', boardRoutes);
+app.use('/api/boards', boardRouter);
+app.use('/api/tasks', taskRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
