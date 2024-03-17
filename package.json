@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node dist/app.js",
-    "dev": "nodemon - exec 'ts-node' src/app.ts"
+    "start": "tsc && node dist/server.js",
+    "dev": "nodemon - exec 'ts-node' src/server.ts",
+    "postinstall": "link-module-alias"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,8 @@
     "dotenv": "^16.4.5",
     "eslint": "^8.0.1",
     "express": "^4.17.1",
+    "link-module-alias": "^1.2.0",
+    "module-alias": "^2.2.2",
     "mongoose": "^8.2.2",
     "nodemon": "^3.1.0",
     "save": "^2.9.0",
@@ -30,5 +33,12 @@
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
     "eslint-plugin-promise": "^6.0.0"
+  },
+  "_moduleAliases": {
+    "src": "./src",
+    "interfaces/*": "./src/interfaces/",
+    "controllers/*": "./src/controllers/",
+    "database/*": "./src/database/",
+    "routers/*": "./src/routers/"
   }
 }

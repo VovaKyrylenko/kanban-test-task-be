@@ -9,10 +9,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@controllers/*": ["./src/controllers"],
-      "@database/*": ["./src/database"],
-      "@interfaces/*": ["./src/interfaces"],
-      "@routes/*": ["./src/routes"]
+      "controllers/*": ["./src/controllers/*"],
+      "@database/*": ["./src/database/*"],
+      "@interfaces/*": ["./src/interfaces/*"],
+      "@routers/*": ["./src/routers/*"]
     }
   },
   "lib": ["es2021"]
