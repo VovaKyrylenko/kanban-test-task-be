@@ -1,14 +1,11 @@
 export interface ITask extends Document {
+  _id: string;
   title: string;
   description: string;
 }
 
-export interface IColumn extends Document {
+export interface IBoard extends Document {
+  _id: string;
   name: string;
   tasks: ITask[];
-}
-
-export interface IBoard extends Document {
-  name: string;
-  columns: IColumn[];
 }
