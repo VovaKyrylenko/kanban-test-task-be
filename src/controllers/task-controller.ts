@@ -18,9 +18,9 @@ export const createTask = async (req: Request, res: Response) => {
         .json({ message: 'Title, description, and status are required' });
     }
 
-    if (!['ToDo', 'In Progress', 'Done'].includes(status)) {
+    if (!['TODO', 'IN PROGRESS', 'DONE'].includes(status)) {
       return res.status(400).json({
-        message: 'Invalid status. Valid statuses are: ToDo, In Progress, Done',
+        message: 'Invalid status. Valid statuses are: TODO, IN PROGRESS, DONE',
       });
     }
 
@@ -60,9 +60,9 @@ export const updateTask = async (req: Request, res: Response) => {
       });
     }
 
-    if (status && !['ToDo', 'In Progress', 'Done'].includes(status)) {
+    if (status && !['TODO', 'IN PROGRESS', 'DONE'].includes(status)) {
       return res.status(400).json({
-        message: 'Invalid status. Valid statuses are: ToDo, In Progress, Done',
+        message: 'Invalid status. Valid statuses are: TODO, IN PROGRESS, DONE',
       });
     }
 

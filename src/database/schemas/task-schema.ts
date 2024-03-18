@@ -7,6 +7,6 @@ export const TaskSchema: Schema = new Schema({
   status: {
     type: String,
     required: true,
-    enum: ['ToDo', 'In Progress', 'Done'],
+    enum: ['TODO', 'IN PROGRESS', 'DONE'],
   },
 });
