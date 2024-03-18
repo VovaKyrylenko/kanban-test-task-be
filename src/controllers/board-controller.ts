@@ -12,6 +12,11 @@ export const createBoard = async (req: Request, res: Response) => {
     const newBoard = await BoardModel.create({ name });
     res.status(201).json(newBoard);
   } catch (error) {
+    if (error.code === 11000 && error.keyPattern && error.keyPattern.name) {
+      return res
+        .status(400)
+        .json({ message: 'A board with this name already exists' });
+    }
     res.status(500).json({ message: error.message });
   }
 };
@@ -25,6 +30,24 @@ export const getBoardById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const board = await BoardModel.findById(id);
+    if (!board) {
+      return res.status(404).json({ message: 'Board not found' });
+    }
+    res.json(board);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Controller function to get a board by its name.
+ * @param req The HTTP request object.
+ * @param res The HTTP response object.
+ */
+export const getBoardByName = async (req: Request, res: Response) => {
+  const { name } = req.params;
+  try {
+    const board = await BoardModel.findOne({ name });
     if (!board) {
       return res.status(404).json({ message: 'Board not found' });
     }
@@ -53,6 +76,11 @@ export const updateBoard = async (req: Request, res: Response) => {
     }
     res.json(updatedBoard);
   } catch (error) {
+    if (error.code === 11000 && error.keyPattern && error.keyPattern.name) {
+      return res
+        .status(400)
+        .json({ message: 'A board with this name already exists' });
+    }
     res.status(500).json({ message: error.message });
   }
 };
