@@ -112,3 +112,27 @@ export const deleteTask = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+/**
+ * Controller function to get a task by its ID.
+ * @param req Express Request object
+ * @param res Express Response object
+ */
+export const getTaskById = async (req: Request, res: Response) => {
+  const { taskId } = req.params;
+
+  try {
+    const board = await BoardModel.findOne({ 'tasks._id': taskId });
+    if (!board) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    const task = board.tasks.find((task) => task._id.toString() === taskId);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    res.json(task);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
