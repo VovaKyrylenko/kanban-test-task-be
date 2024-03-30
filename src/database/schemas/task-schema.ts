@@ -1,12 +1,11 @@
 import { Schema } from 'mongoose';
 
 export const TaskSchema: Schema = new Schema({
-  _id: { type: Schema.Types.ObjectId, auto: true },
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  status: {
-    type: String,
-    required: true,
-    enum: ['TODO', 'IN PROGRESS', 'DONE'],
+  column: {
+    type: Schema.Types.ObjectId,
+    ref: 'Column',
   },
+  title: String,
+  description: String,
+  position: Number,
 });
