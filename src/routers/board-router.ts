@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   createBoard,
-  getBoardById,
+  getBoard,
   updateBoard,
   deleteBoard,
 } from 'src/controllers';
@@ -9,6 +9,6 @@ import {
 export const boardRouter = express.Router();
 
 boardRouter.post('/', createBoard);
-boardRouter.get('/:id', getBoardById);
+boardRouter.get('/:id', getBoard);
 boardRouter.put('/:id', updateBoard);
 boardRouter.delete('/:id', deleteBoard);
