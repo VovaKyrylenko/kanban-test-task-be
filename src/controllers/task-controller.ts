@@ -1,5 +1,5 @@
+import { taskService } from 'src/services/';
 import { Request, Response } from 'express';
-import { BoardModel } from 'src/database/';
 
 /**
  * Controller function to create a new task in a board.
@@ -7,36 +7,22 @@ import { BoardModel } from 'src/database/';
  * @param res Express Response object
  */
 export const createTask = async (req: Request, res: Response) => {
-  const { boardId } = req.params;
-
+  const { column } = req.params;
   try {
-    const { title, description, status } = req.body;
-
-    if (!title || !description || !status) {
-      return res
-        .status(400)
-        .json({ message: 'Title, description, and status are required' });
-    }
-
-    if (!['TODO', 'IN PROGRESS', 'DONE'].includes(status)) {
+    const { title, description, position } = req.body;
+    if (!title || !description || !position) {
       return res.status(400).json({
-        message: 'Invalid status. Valid statuses are: TODO, IN PROGRESS, DONE',
+        message: 'Title, description and position are required',
       });
     }
-
-    const updatedBoard = await BoardModel.findByIdAndUpdate(
-      boardId,
-      {
-        $push: { tasks: { title, description, status } },
-      },
-      { new: true },
+    const newTask = await taskService.createTask(
+      title,
+      description,
+      column,
+      position,
     );
 
-    if (!updatedBoard) {
-      return res.status(404).json({ message: 'Board not found' });
-    }
-
-    res.status(201).json(updatedBoard.tasks.slice(-1)[0]);
+    res.status(201).json(newTask);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -49,40 +35,23 @@ export const createTask = async (req: Request, res: Response) => {
  */
 export const updateTask = async (req: Request, res: Response) => {
   const { taskId } = req.params;
-
   try {
-    const { title, description, status } = req.body;
-
-    if (!title && !description && !status) {
+    const { title, description, column, position } = req.body;
+    if (!title && !description && !column && !position) {
       return res.status(400).json({
         message:
-          'At least one field (title, description, status) must be provided',
+          'At least one field (title, description, column, position) must be provided',
       });
     }
-
-    if (status && !['TODO', 'IN PROGRESS', 'DONE'].includes(status)) {
-      return res.status(400).json({
-        message: 'Invalid status. Valid statuses are: TODO, IN PROGRESS, DONE',
-      });
-    }
-
-    const updatedTask = await BoardModel.findOneAndUpdate(
-      { 'tasks._id': taskId },
-      {
-        $set: {
-          'tasks.$.title': title,
-          'tasks.$.description': description,
-          'tasks.$.status': status,
-        },
-      },
-      { new: true, projection: { tasks: { $elemMatch: { _id: taskId } } } },
+    const updatedTask = await taskService.updateTask(
+      taskId,
+      title,
+      description,
+      column,
+      position,
     );
 
-    if (!updatedTask) {
-      return res.status(404).json({ message: 'Task not found' });
-    }
-
-    res.json(updatedTask.tasks[0]);
+    res.json(updatedTask);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -95,18 +64,8 @@ export const updateTask = async (req: Request, res: Response) => {
  */
 export const deleteTask = async (req: Request, res: Response) => {
   const { taskId } = req.params;
-
   try {
-    const updatedBoard = await BoardModel.findOneAndUpdate(
-      { 'tasks._id': taskId },
-      { $pull: { tasks: { _id: taskId } } },
-      { new: true },
-    );
-
-    if (!updatedBoard) {
-      return res.status(404).json({ message: 'Task not found' });
-    }
-
+    await taskService.deleteTask(taskId);
     res.json({ message: 'Task deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -120,18 +79,32 @@ export const deleteTask = async (req: Request, res: Response) => {
  */
 export const getTaskById = async (req: Request, res: Response) => {
   const { taskId } = req.params;
-
   try {
-    const board = await BoardModel.findOne({ 'tasks._id': taskId });
-    if (!board) {
-      return res.status(404).json({ message: 'Task not found' });
-    }
-    const task = board.tasks.find((task) => task._id.toString() === taskId);
+    const task = await taskService.getTaskById(taskId);
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
-
     res.json(task);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Controller function to get tasks by column.
+ * @param req Express Request object
+ * @param res Express Response object
+ */
+export const getTasksByColumn = async (req: Request, res: Response) => {
+  const { columnId } = req.params;
+  try {
+    const tasks = await taskService.getTasksByColumn(columnId);
+    if (!tasks) {
+      return res
+        .status(404)
+        .json({ message: 'Tasks not found for this column' });
+    }
+    res.json(tasks);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

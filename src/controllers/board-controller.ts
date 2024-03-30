@@ -1,69 +1,84 @@
 import { Request, Response } from 'express';
-import { BoardModel } from 'src/database/';
+import { boardService, columnService } from 'src/services';
 
 /**
  * Controller function to create a new board.
  * @param req The HTTP request object.
  * @param res The HTTP response object.
  */
-export const createBoard = async (req: Request, res: Response) => {
+export const createBoard = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
   try {
     const { name } = req.body;
-    const newBoard = await BoardModel.create({ name });
-    res.status(201).json(newBoard);
+    if (!name) {
+      return res.status(400).json({ message: 'Name is required' });
+    }
+    const newBoard = await boardService.createBoard(name);
+    await columnService.createDefaultColumns(newBoard._id.toString());
+    return res.status(201).json(newBoard);
   } catch (error) {
     if (error.code === 11000 && error.keyPattern && error.keyPattern.name) {
       return res
         .status(400)
         .json({ message: 'A board with this name already exists' });
+    } else {
+      return res.status(500).json({ message: error.message });
     }
-    res.status(500).json({ message: error.message });
   }
 };
 
 /**
- * Controller function to get a board by its ID.
+ * Retrieves a board by its ID.
  * @param req The HTTP request object.
  * @param res The HTTP response object.
  */
-export const getBoardById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+export const getBoard = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
   try {
-    const board = await BoardModel.findById(id);
+    const { id } = req.params;
+    const board = await boardService.getBoardById(id);
     if (!board) {
       return res.status(404).json({ message: 'Board not found' });
     }
-    res.json(board);
+    return res.json(board);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error getting board:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
 /**
- * Controller function to update a board by its ID.
+ * Updates a board by its ID.
  * @param req The HTTP request object.
  * @param res The HTTP response object.
  */
-export const updateBoard = async (req: Request, res: Response) => {
+export const updateBoard = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
   const { id } = req.params;
   const { name } = req.body;
+
   try {
-    const updatedBoard = await BoardModel.findByIdAndUpdate(
-      id,
-      { name },
-      { new: true },
-    );
+    if (!name) {
+      return res.status(400).json({ message: 'Name is required' });
+    }
+    const updatedBoard = await boardService.updateBoard(id, name);
     if (!updatedBoard) {
       return res.status(404).json({ message: 'Board not found' });
     }
-    res.json(updatedBoard);
+    return res.json(updatedBoard);
   } catch (error) {
     if (error.code === 11000 && error.keyPattern && error.keyPattern.name) {
       return res
         .status(400)
         .json({ message: 'A board with this name already exists' });
     }
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -72,15 +87,19 @@ export const updateBoard = async (req: Request, res: Response) => {
  * @param req The HTTP request object.
  * @param res The HTTP response object.
  */
-export const deleteBoard = async (req: Request, res: Response) => {
+export const deleteBoard = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
   const { id } = req.params;
   try {
-    const deletedBoard = await BoardModel.findByIdAndDelete(id);
+    const deletedBoard = await boardService.deleteBoard(id);
     if (!deletedBoard) {
       return res.status(404).json({ message: 'Board not found' });
     }
-    res.json({ message: 'Board deleted' });
+    await columnService.deleteColumnsByBoardId(id);
+    return res.json({ message: 'Board deleted' });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
