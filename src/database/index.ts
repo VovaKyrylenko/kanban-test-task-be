@@ -1,2 +1,2 @@
-export { BoardModel } from './models';
+export * from './models';
 export { connectDB } from './database';
