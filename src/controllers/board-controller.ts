@@ -73,11 +73,6 @@ export const updateBoard = async (
     }
     return res.json(updatedBoard);
   } catch (error) {
-    if (error.code === 11000 && error.keyPattern && error.keyPattern.name) {
-      return res
-        .status(400)
-        .json({ message: 'A board with this name already exists' });
-    }
     return res.status(500).json({ message: error.message });
   }
 };
